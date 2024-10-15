@@ -10,11 +10,9 @@ async function getCameraAccess() {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
 
-        // Certifique-se de que o vídeo está pronto antes de configurar o canvas
+        // Certifique-se de que o vídeo está pronto antes de capturar imagens
         video.addEventListener('loadedmetadata', () => {
             video.play();
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
         });
     } catch (error) {
         console.error("Erro ao acessar a câmera:", error);
@@ -23,7 +21,6 @@ async function getCameraAccess() {
 }
 
 getCameraAccess();
-
 
 // Atualiza as instruções conforme as imagens são capturadas
 function updateInstructions() {
@@ -58,6 +55,11 @@ captureButton.addEventListener('click', () => {
 
 // Função para salvar o mapeamento de profundidade como PNG
 function saveDepthMap() {
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+        alert("Vídeo não está carregado corretamente. Tente novamente.");
+        return;
+    }
+
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -75,6 +77,12 @@ function saveDepthMap() {
     link.download = 'depth_map.png';
     link.click();
 }
+
+// Botão para salvar o mapeamento de profundidade
+const saveButton = document.createElement('button');
+saveButton.textContent = 'Salvar Mapeamento de Profundidade';
+saveButton.addEventListener('click', saveDepthMap);
+document.body.appendChild(saveButton);
 
 // Função para renderizar a imagem gerada e entrar na simulação
 function renderSimulation() {
@@ -108,10 +116,4 @@ function renderSimulation() {
 const renderButton = document.createElement('button');
 renderButton.textContent = 'Entrar na Simulação';
 renderButton.addEventListener('click', renderSimulation);
-document.body.appendChild(renderButton);
-
-// Botão para salvar o mapeamento de profundidade
-const saveButton = document.createElement('button');
-saveButton.textContent = 'Salvar Mapeamento de Profundidade';
-saveButton.addEventListener('click', saveDepthMap);
-document.body.appendChild(saveButton);
+document
