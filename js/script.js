@@ -116,4 +116,33 @@ function renderSimulation() {
 const renderButton = document.createElement('button');
 renderButton.textContent = 'Entrar na Simulação';
 renderButton.addEventListener('click', renderSimulation);
-document
+document.body.appendChild(renderButton);
+
+// Função para renderizar a imagem gerada e entrar na simulação
+function renderSimulation() {
+    const container = document.createElement('div');
+    container.style.width = '100%';
+    container.style.height = '100%';
+    document.body.appendChild(container);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    // Adicionar a imagem gerada como textura no plano
+    const geometry = new THREE.PlaneGeometry(video.videoWidth, video.videoHeight);
+    const texture = new THREE.CanvasTexture(document.querySelector('canvas'));
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    camera.position.z = 5;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+    animate();
+}
