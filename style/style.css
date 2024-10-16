@@ -14,9 +14,10 @@ body {
     border-radius: 10px;
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: black; /* Adiciona um fundo preto para garantir visibilidade */
 }
 
-#capture, #saveButton, #renderButton {
+button {
     margin: 10px;
     padding: 10px 20px;
     font-size: 16px;
@@ -28,7 +29,7 @@ body {
     transition: background-color 0.3s;
 }
 
-#capture:hover, #saveButton:hover, #renderButton:hover {
+button:hover {
     background-color: #0056b3;
 }
 
@@ -55,20 +56,4 @@ body {
     margin: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
 }
