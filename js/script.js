@@ -9,7 +9,6 @@ async function getCameraAccess() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
-
         // Certifique-se de que o vídeo está pronto antes de capturar imagens
         video.addEventListener('loadedmetadata', () => {
             video.play();
@@ -42,14 +41,12 @@ captureButton.addEventListener('click', () => {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
     const img = new Image();
     img.src = canvas.toDataURL('image/png');
     imagesContainer.appendChild(img);
     images.push(img.src); // Armazena a imagem em um array
     captureCount++;
     updateInstructions();
-
     console.log(`Capturadas ${images.length} imagens`);
 });
 
@@ -59,7 +56,6 @@ function saveDepthMap() {
         alert("Vídeo não está carregado corretamente. Tente novamente.");
         return;
     }
-
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -97,8 +93,9 @@ function renderSimulation() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
-    const geometry = new THREE.PlaneGeometry(canvas.width, canvas.height);
-    const texture = new THREE.CanvasTexture(canvas);
+    // Adicionar a imagem gerada como textura no plano
+    const geometry = new THREE.PlaneGeometry(video.videoWidth, video.videoHeight);
+    const texture = new THREE.CanvasTexture(document.querySelector('canvas'));
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
@@ -117,32 +114,3 @@ const renderButton = document.createElement('button');
 renderButton.textContent = 'Entrar na Simulação';
 renderButton.addEventListener('click', renderSimulation);
 document.body.appendChild(renderButton);
-
-// Função para renderizar a imagem gerada e entrar na simulação
-function renderSimulation() {
-    const container = document.createElement('div');
-    container.style.width = '100%';
-    container.style.height = '100%';
-    document.body.appendChild(container);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
-
-    // Adicionar a imagem gerada como textura no plano
-    const geometry = new THREE.PlaneGeometry(video.videoWidth, video.videoHeight);
-    const texture = new THREE.CanvasTexture(document.querySelector('canvas'));
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-
-    camera.position.z = 5;
-
-    function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-    }
-    animate();
-}
